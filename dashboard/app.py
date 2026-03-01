@@ -321,11 +321,12 @@ st.markdown("---")
 
 # ── KPI metrics strip ──────────────────────────────────────────────────────
 stats = fetch_stats(API_URL)
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("⏸ Awaiting Review",  stats.get("pending_review",  0), help="Flagged by LLM for human decision")
-c2.metric("✅ Auto-Approved",    stats.get("total_approved",  0), help="Passed all governance layers")
-c3.metric("🚫 Auto-Rejected",   stats.get("total_rejected",  0), help="Blocked by static rules or LLM")
-c4.metric("📦 Total Requests",  stats.get("total_requests",  0), help="All pricing updates since start")
+c1, c2, c3, c4, c5 = st.columns(5)
+c1.metric("⏸ Awaiting Review",   stats.get("pending_review",       0), help="Flagged by AI, awaiting human decision")
+c2.metric("✅ Auto-Approved",     stats.get("total_approved",        0), help="Passed all AI governance layers automatically")
+c3.metric("🚫 Auto-Rejected",    stats.get("total_rejected",        0), help="Blocked by static rules or AI automatically")
+c4.metric("👤 Human Reviewed",   stats.get("total_human_reviewed",  0), help="Manually approved or rejected by a human — not counted in auto stats")
+c5.metric("📦 Total Requests",   stats.get("total_requests",        0), help="All pricing updates since start")
 
 st.markdown("---")
 

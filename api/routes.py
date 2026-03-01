@@ -264,6 +264,17 @@ async def submit_review(
             detail=f"No governance log found for request_id={request_id}",
         )
 
+    # Immutability check: once a decision (approved/rejected) is made, it cannot be changed
+    if row["status"] in (DecisionStatus.APPROVED.value, DecisionStatus.REJECTED.value):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                f"Decision is FINAL and IMMUTABLE. "
+                f"This request was already '{row['status']}' by "
+                f"{'Human reviewer: ' + row['human_reviewer_id'] if row['human_reviewer_id'] else 'the AI Governance Engine'}."
+            ),
+        )
+
     if row["status"] != DecisionStatus.MANUAL_REVIEW.value:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -308,10 +319,11 @@ async def submit_review(
 async def hitl_stats(db: AsyncSession = Depends(get_db)) -> dict:
     sql = text("""
         SELECT
-            COUNT(*) FILTER (WHERE status = 'manual_review') AS pending_review,
-            COUNT(*) FILTER (WHERE status = 'approved')      AS total_approved,
-            COUNT(*) FILTER (WHERE status = 'rejected')      AS total_rejected,
-            COUNT(*)                                          AS total_requests
+            COUNT(*) FILTER (WHERE status = 'manual_review')                               AS pending_review,
+            COUNT(*) FILTER (WHERE status = 'approved'  AND human_reviewer_id IS NULL)     AS total_approved,
+            COUNT(*) FILTER (WHERE status = 'rejected'  AND human_reviewer_id IS NULL)     AS total_rejected,
+            COUNT(*) FILTER (WHERE human_reviewer_id IS NOT NULL)                          AS total_human_reviewed,
+            COUNT(*)                                                                        AS total_requests
         FROM governance_logs
     """)
     result = await db.execute(sql)
