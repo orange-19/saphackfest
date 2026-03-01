@@ -102,7 +102,7 @@ with st.sidebar:
     st.image("dashboard/athena_logo.png", use_container_width=True)
     st.markdown("---")
     import os
-    default_api_url = os.getenv("API_BASE_URL", "https://saphackfest-ggmdcvhu9zg6srkeceeaqi.streamlit.app/")
+    default_api_url = os.getenv("API_BASE_URL", "https://saphackfest-1.onrender.com")
     API_URL = st.text_input("API Base URL", value=default_api_url)
     REVIEWER_ID = st.text_input("Reviewer ID", value="ops-user-1")
     auto_refresh = st.toggle("Auto-refresh (10s)", value=True)
