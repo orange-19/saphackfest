@@ -101,7 +101,9 @@ hr { border-color: #e2e8f0 !important; }
 with st.sidebar:
     st.image("dashboard/athena_logo.png", use_container_width=True)
     st.markdown("---")
-    API_URL = st.text_input("API Base URL", value="http://localhost:8000")
+    import os
+    default_api_url = os.getenv("API_BASE_URL", "http://localhost:8000")
+    API_URL = st.text_input("API Base URL", value=default_api_url)
     REVIEWER_ID = st.text_input("Reviewer ID", value="ops-user-1")
     auto_refresh = st.toggle("Auto-refresh (10s)", value=True)
     st.markdown("---")
