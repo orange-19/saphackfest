@@ -66,7 +66,7 @@ async def evaluate_static_rules(
             return Layer1Result(passed=False, rule_name="human_discount_rule", message=msg, delta_pct=delta_pct)
     else:
         if delta_pct < -65.0:
-            msg = "Policy 1 Violation: AI Hallucination. Exceeds 65% AI limit."
+            msg = "Policy 1 Violation: Human session logged out. AI Hallucination detected."
             logger.warning(f"[Layer1] {msg} | product={product_id}")
             return Layer1Result(passed=False, rule_name="ai_discount_rule", message=msg, delta_pct=delta_pct)
 
